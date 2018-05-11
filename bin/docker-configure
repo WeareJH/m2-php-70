@@ -1,0 +1,9 @@
+#!/bin/bash
+
+envsubst < "/usr/local/etc/php/conf.d/custom.template" > "/usr/local/etc/php/conf.d/custom.ini"
+envsubst < "/etc/msmtprc.template" > "/etc/msmtprc"
+
+rm /usr/local/etc/php/conf.d/custom.template
+rm /etc/msmtprc.template
+
+exec "$@"
