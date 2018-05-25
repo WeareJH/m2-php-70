@@ -1,10 +1,9 @@
 FROM php:7.0-fpm
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
-
 RUN apt-get update \
   && apt-get install -y \
     cron \
+    gnupg \
     libfreetype6-dev \
     libicu-dev \
     libjpeg62-turbo-dev \
@@ -35,6 +34,7 @@ RUN docker-php-ext-install \
     pcntl
 
 RUN pecl install -o -f xdebug-2.5.0
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 
 RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$version \
@@ -44,7 +44,7 @@ RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
 
 # Configuration files
 COPY etc /usr/local/etc/php/conf.d/
-COPY etc /etc/msmtprc.template
+COPY etc/msmtprc.template /etc/msmtprc.template
 
 # Copy in Entrypoint file & Magento installation script
 COPY bin bin/magento-install bin/magento-configure /usr/local/bin/
