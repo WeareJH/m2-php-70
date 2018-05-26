@@ -42,16 +42,15 @@ RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && mv /tmp/blackfire-*.so $(php -r "echo ini_get('extension_dir');")/blackfire.so \
     && printf "extension=blackfire.so\nblackfire.agent_socket=tcp://blackfire:8707\n" > $PHP_INI_DIR/conf.d/blackfire.ini;
 
-# Configuration files
-COPY etc /usr/local/etc/php/conf.d/
+COPY etc/custom.template etc/xdebug.template /usr/local/etc/php/conf.d/
 COPY etc/msmtprc.template /etc/msmtprc.template
 
 # Copy in Entrypoint file & Magento installation script
-COPY bin bin/magento-install bin/magento-configure /usr/local/bin/
+COPY bin/docker-configure bin/magento-install bin/magento-configure /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-configure /usr/local/bin/magento-install /usr/local/bin/magento-configure
 
 # Composer
-RUN  curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /var/www
 
