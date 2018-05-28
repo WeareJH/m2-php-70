@@ -1,4 +1,4 @@
-# php
+# php [![Build Status](https://travis-ci.org/WeareJH/m2-php-70.svg?branch=master)](https://travis-ci.org/WeareJH/m2-php-70)
 
 ## Published image name
 
