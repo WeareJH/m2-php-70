@@ -3,12 +3,12 @@ FROM php:7.0-fpm
 RUN apt-get update \
   && apt-get install -y \
     cron \
-    gnupg \
+    gnupg1 \
     libfreetype6-dev \
     libicu-dev \
     libjpeg62-turbo-dev \
     libmcrypt-dev \
-    libpng12-dev \
+    libpng-dev \
     libxslt1-dev \
     gettext \
     msmtp \
