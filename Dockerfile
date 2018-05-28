@@ -1,5 +1,7 @@
 FROM php:7.0-fpm
 
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+
 RUN apt-get update \
   && apt-get install -y \
     cron \
@@ -34,7 +36,6 @@ RUN docker-php-ext-install \
     pcntl
 
 RUN pecl install -o -f xdebug-2.5.0
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 
 RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$version \
