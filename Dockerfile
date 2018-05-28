@@ -1,15 +1,14 @@
 FROM php:7.0-fpm
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
-
 RUN apt-get update \
   && apt-get install -y \
     cron \
+    gnupg1 \
     libfreetype6-dev \
     libicu-dev \
     libjpeg62-turbo-dev \
     libmcrypt-dev \
-    libpng12-dev \
+    libpng-dev \
     libxslt1-dev \
     gettext \
     msmtp \
@@ -35,6 +34,7 @@ RUN docker-php-ext-install \
     pcntl
 
 RUN pecl install -o -f xdebug-2.5.0
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 
 RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$version \
@@ -42,16 +42,15 @@ RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && mv /tmp/blackfire-*.so $(php -r "echo ini_get('extension_dir');")/blackfire.so \
     && printf "extension=blackfire.so\nblackfire.agent_socket=tcp://blackfire:8707\n" > $PHP_INI_DIR/conf.d/blackfire.ini;
 
-# Configuration files
-COPY etc /usr/local/etc/php/conf.d/
-COPY etc /etc/msmtprc.template
+COPY etc/custom.template etc/xdebug.template /usr/local/etc/php/conf.d/
+COPY etc/msmtprc.template /etc/msmtprc.template
 
 # Copy in Entrypoint file & Magento installation script
-COPY bin bin/magento-install bin/magento-configure /usr/local/bin/
+COPY bin/docker-configure bin/magento-install bin/magento-configure /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-configure /usr/local/bin/magento-install /usr/local/bin/magento-configure
 
 # Composer
-RUN  curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /var/www
 
